@@ -19,14 +19,15 @@ const start = async () => {
       const match = content.match(pattern),
         head = match && match[0];
       if (head) {
-        content = content.replace(head, `${message}\n${head}`);
-        await $c.writeFile(changelog, content);
+        let fileContent = content.replace(head, `${message}\n${head}`);
+        await $c.writeFile(changelog, fileContent);
       }
     }
+    console.log(data.version);
   } catch (e) {
     console.error('\x1b[31m\x1b[40m%s\x1b[0m', e.output || e);
   } finally {
-    // process.exit(0);
+    process.exit(0);
   }
 };
 

@@ -34,8 +34,8 @@ const options = [{
 }, {
 	option: "-e,--versions",
 	type: "string",
-	default: "patch",
-	description: "specify comma separated list of versions to update the changelog  (major | minor | (default) patch | premajor | preminor | prepatch | prerelease | from-git)."
+	default: "",
+	description: "specify comma separated list of versions to update the changelog  (major | minor | patch | premajor | preminor | prepatch | prerelease | from-git)."
 }, {
 	option: "-o,--config",
 	type: "string",
@@ -109,8 +109,8 @@ async function init() {
 	if (CL.r != defaultConfig.transform) {
 		config.transform = CL.r;
 	}
-	if (CL.e && CL.e.length) {
-		config.versions = CL.e;
+	if (CL.e) {
+		config.versions = CL.e.split(',');
 	}
 	if (CL.c != defaultConfig.changelog) {
 		config.changelog = CL.c;

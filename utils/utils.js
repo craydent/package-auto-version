@@ -21,7 +21,7 @@ let changelog = path.join(process.cwd(), config.changelog);
 let template = path.join(process.cwd(), config.changelogTemplate);
 let promptTemplate = path.join(process.cwd(), config.promptTemplate);
 const defaultChanglogTemplate = `| \${version} | (\${author}:\${date}) \${others.0} |\n`;
-const defaultPromptTemplate = `**********************************************************************\n\${message}\n**********************************************************************\nThis will be your git message. Please enter your text to change\r\n`
+const defaultPromptTemplate = `**********************************************************************\n\${message}\n**********************************************************************\nThis will be your git message. Please enter your text to change\n`
 const silent = { silent: true, alwaysResolve: true };
 const GITDATA = 0, CHANGELOG = 1, CHANGELOG_TEMPLATE = 2, VERSION = 3, PROMPT_TEMPLATE = 4;
 config.middleware = $c.include(config.transform) || { transform: null };
@@ -119,6 +119,9 @@ function setConfig(conf) {
     template = path.join(process.cwd(), config.changelogTemplate);
     promptTemplate = path.join(process.cwd(), config.promptTemplate);
     config.middleware = $c.include(config.transform || "") || { transform: null };
+    if ($c.isString(config.versions)) {
+        config.versions = config.versions.split(',');
+    }
 
     module.exports.config = config;
     module.exports.changelog = path.join(process.cwd(), config.changelog);
