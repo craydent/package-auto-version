@@ -28,6 +28,14 @@ $ pav -v;
 
 pav version takes no arguments.  This will output the current verion of the module.
 
+#### Completion
+
+```shell
+$ pav completion;
+```
+
+pav completion takes no arguments.  This will output the completion script which is used for tab completion.
+
 #### Man
 
 ```shell
@@ -39,11 +47,11 @@ pav man takes no arguments.  This will output the manual.
 #### Help
 
 ```shell
-$ sudo pav help;
-$ sudo pav --help;
+$ pav help;
+$ pav --help;
 ```
 
-pav --help/help will output the current ehlp docs for the module.
+pav --help/help will output the current help docs for the module.
 
 #### Usage
 
@@ -52,7 +60,7 @@ $ pav {{./path/to/CHANGELOG.md}} {{./path/to/changelogTemplate.md}} {{./path/to/
 
 $ pav -c {{./path/to/CHANGELOG.md}} -t {{./path/to/changelogTemplate.md}} -p {{./path/to/promptTemplate.md}} -r {{module/or/path/to/transform/file}} -e '{{patch,minor,major,etc}}' -o {{/var/path/to/config.json}}
 
-$ sudo pav --changelog {{./path/to/CHANGELOG.md}} --changelogTemplate {{./path/to/changelogTemplate.md}} --promptTemplate {{./path/to/promptTemplate.md}} --transform {{module/or/path/to/transform/file}} --versions '{{patch,minor,major,etc}}' --config {{/var/path/to/config.json}}
+$ pav --changelog {{./path/to/CHANGELOG.md}} --changelogTemplate {{./path/to/changelogTemplate.md}} --promptTemplate {{./path/to/promptTemplate.md}} --transform {{module/or/path/to/transform/file}} --versions '{{patch,minor,major,etc}}' --config {{/var/path/to/config.json}}
 ```
 
 "-c,--changelog"
