@@ -118,7 +118,7 @@ function setConfig(conf) {
     version = conf.version || 'patch';
     template = path.join(process.cwd(), config.changelogTemplate);
     promptTemplate = path.join(process.cwd(), config.promptTemplate);
-    config.middleware = $c.include(config.transform) || { transform: null };
+    config.middleware = $c.include(config.transform || "") || { transform: null };
 
     module.exports.config = config;
     module.exports.changelog = path.join(process.cwd(), config.changelog);

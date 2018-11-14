@@ -60,24 +60,12 @@ CL
 	.command("completion", options)
 	.action(completion)
 
-CL
-	.command("major", options)
-	.action(init)
-	.command("minor", options)
-	.action(init)
-	.command("patch", options)
-	.action(init)
-	.command("premajor", options)
-	.action(init)
-	.command("preminor", options)
-	.action(init)
-	.command("prepatch", options)
-	.action(init)
-	.command("prerelease", options)
-	.action(init)
-	.command("from-git", options)
-	.action(init)
-	.command("*", options)
+var commands = ["major", "minor", "patch", "premajor", "preminor", "prepatch", "prerelease", "from-git"];
+for (var i = 0, len = commands.length; i < len; i++) {
+	CL.command(commands[i], options)
+		.action(init)
+}
+CL.command("*", options)
 	.action(init)
 	.action(version);
 
@@ -90,13 +78,16 @@ function version() {
 function completion() {
 	if (CL.CommandName == "completion") {
 		let fs = require('fs');
-		console.log();
 		console.log(fs.readFileSync(`${__dirname}/completion.sh`,'utf8'));
 		return process.exit();
 	}
 }
 async function init() {
 	if (CL.version === true) { return; }
+	if (!~commands.indexOf(CL.CommandName) && CL.CommandName != "*") {
+		console.log(CL.renderHelp());
+		return process.exit();
+	}
 	utils.setConfig({
 		version: CL.CommandName == "*" ? "patch" : CL.CommandName,
 		changelogTemplate: CL.t,
