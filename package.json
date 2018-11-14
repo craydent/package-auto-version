@@ -1,6 +1,6 @@
 {
   "name": "package-auto-version",
-  "version": "0.0.1-2",
+  "version": "0.0.1-3",
   "description": "Automatically update version and update changelog",
   "main": "index.js",
   "scripts": {
@@ -21,7 +21,7 @@
   "license": "MIT",
   "homepage": "https://bitbucket.org/cinada/package-auto-version#readme",
   "bin": {
-    "pav": "./bin/index"
+    "pav": "./bin/pav"
   },
   "dependencies": {
     "craydent": "^0.8.9"

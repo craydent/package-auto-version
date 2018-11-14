@@ -84,7 +84,7 @@ function completion() {
 }
 async function init() {
 	if (CL.version === true) { return; }
-	if (!~commands.indexOf(CL.CommandName) && CL.CommandName != "*") {
+	if (CL.Arguments.length) {
 		console.log(CL.renderHelp());
 		return process.exit();
 	}
