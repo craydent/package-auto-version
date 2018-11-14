@@ -3,6 +3,13 @@ const $c = require('craydent/global');
 const pkg = require('../package.json');
 const utils = require('../utils/utils');
 const { start } = require('../utils/start');
+const defaultConfig = {
+    changelog: './CHANGELOG.md',
+    changelogTemplate: './changelogTemplate.md',
+    promptTemplate: './promptTemplate.md',
+    versions: [],
+    transform: ''
+}
 $c.DEBUG_MODE = true;
 
 const options = [{
@@ -88,15 +95,30 @@ async function init() {
 		console.log(CL.renderHelp());
 		return process.exit();
 	}
-	utils.setConfig({
-		version: CL.CommandName == "*" ? "patch" : CL.CommandName,
-		changelogTemplate: CL.t,
-		promptTemplate: CL.p,
-		transform: CL.r,
-		versions: CL.e,
-		changelog: CL.c,
-		config: CL.o
-	});
+	let config = {};
+
+	if (CL.CommandName != "*") {
+		config.version = CL.CommandName;
+	}
+	if (CL.t != defaultConfig.changelogTemplate) {
+		config.changelogTemplate = CL.t;
+	}
+	if (CL.p != defaultConfig.promptTemplate) {
+		config.promptTemplate = CL.p;
+	}
+	if (CL.r != defaultConfig.transform) {
+		config.transform = CL.r;
+	}
+	if (CL.e && CL.e.length) {
+		config.versions = CL.e;
+	}
+	if (CL.c != defaultConfig.changelog) {
+		config.changelog = CL.c;
+	}
+	if (CL.o != defaultConfig.config) {
+		config.config = CL.o;
+	}
+	utils.setConfig(config);
 	await start()
 	// process.exit();
 }
