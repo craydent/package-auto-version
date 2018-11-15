@@ -12,7 +12,7 @@ const start = async () => {
     let message = await generateMessage(changelogTemplateStr, data);
 
     const prompt = $c.fillTemplate(promptTemplateStr, { message });
-    if (config.noPrompt != true) {
+    if (config.noPrompt != true && updateChangelog) {
       message = (await question(prompt)).trim() || message;
     }
     if (updateChangelog) {
