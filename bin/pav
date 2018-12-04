@@ -8,8 +8,10 @@ const defaultConfig = {
     changelogTemplate: './changelogTemplate.md',
     promptTemplate: './promptTemplate.md',
     versions: [],
-    transform: ''
-}
+    transform: '',
+    transformGitMessage: '',
+    transformAuthor: ''
+};
 $c.DEBUG_MODE = true;
 
 const options = [{
@@ -30,16 +32,24 @@ const options = [{
 }, {
 	option: "-r,--transform",
 	type: "string",
-	description: "specify middleware to inject to transform the changelog entry."
+	description: "specify middleware to inject to t[r]ansform the changelog entry."
+}, {
+	option: "-a,--transformAuthor",
+	type: "string",
+	description: "specify middleware to inject to transform the [a]uthor field."
+}, {
+	option: "-i,--transformGitMessage",
+	type: "string",
+	description: "specify middleware to inject to transform the g[i]t message."
 }, {
 	option: "-e,--versions",
 	type: "string",
 	default: "",
-	description: "specify comma separated list of versions to update the changelog  (major | minor | patch | premajor | preminor | prepatch | prerelease | from-git)."
+	description: "specify comma separated list of v[e]rsions to update the changelog  (major | minor | patch | premajor | preminor | prepatch | prerelease | from-git)."
 }, {
 	option: "-o,--config",
 	type: "string",
-	description: "specify a config file to use instead of using command line options."
+	description: "specify a c[o]nfig file to use instead of using command line options."
 }, {
 	option: "-v,--version",
 	type: "string",
@@ -108,6 +118,12 @@ async function init() {
 	}
 	if (CL.r != defaultConfig.transform) {
 		config.transform = CL.r;
+	}
+	if (CL.a != defaultConfig.transformAuthor) {
+		config.transformAuthor = CL.a;
+	}
+	if (CL.i != defaultConfig.transformGitMessage) {
+		config.transformGitMessage = CL.i;
 	}
 	if (CL.e) {
 		config.versions = CL.e.split(',');

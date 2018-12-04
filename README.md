@@ -56,11 +56,11 @@ pav --help/help will output the current help docs for the module.
 #### Usage
 
 ```shell
-$ pav {{./path/to/CHANGELOG.md}} {{./path/to/changelogTemplate.md}} {{./path/to/promptTemplate.md}} {{module/or/path/to/transform/file}} '{{patch,minor,major,etc}}' {{/var/path/to/config.json}}
+$ pav {{./path/to/CHANGELOG.md}} {{./path/to/changelogTemplate.md}} {{./path/to/promptTemplate.md}} {{module/or/path/to/transform/file}} {{module/or/path/to/transformAuthor/file}} {{module/or/path/to/transformGitMessage/file}} '{{patch,minor,major,etc}}' {{/var/path/to/config.json}}
 
-$ pav -c {{./path/to/CHANGELOG.md}} -t {{./path/to/changelogTemplate.md}} -p {{./path/to/promptTemplate.md}} -r {{module/or/path/to/transform/file}} -e '{{patch,minor,major,etc}}' -o {{/var/path/to/config.json}}
+$ pav -c {{./path/to/CHANGELOG.md}} -t {{./path/to/changelogTemplate.md}} -p {{./path/to/promptTemplate.md}} -r {{module/or/path/to/transform/file}} -a {{module/or/path/to/transformAuthor/file}} -i {{module/or/path/to/transformGitMessage/file}} -e '{{patch,minor,major,etc}}' -o {{/var/path/to/config.json}}
 
-$ pav --changelog {{./path/to/CHANGELOG.md}} --changelogTemplate {{./path/to/changelogTemplate.md}} --promptTemplate {{./path/to/promptTemplate.md}} --transform {{module/or/path/to/transform/file}} --versions '{{patch,minor,major,etc}}' --config {{/var/path/to/config.json}}
+$ pav --changelog {{./path/to/CHANGELOG.md}} --changelogTemplate {{./path/to/changelogTemplate.md}} --promptTemplate {{./path/to/promptTemplate.md}} --transform {{module/or/path/to/transform/file}} --transformAuthor {{module/or/path/to/transformAuthor/file}} --transformGitMessage {{module/or/path/to/transformGitMessage/file}} --versions '{{patch,minor,major,etc}}' --config {{/var/path/to/config.json}}
 ```
 
 "-c,--changelog"
@@ -70,6 +70,8 @@ $ pav --changelog {{./path/to/CHANGELOG.md}} --changelogTemplate {{./path/to/cha
 "-p,--promptTemplate",
 	default: "./promptTemplate.md",
 "-r,--transform",
+"-a,--transformAuthor",
+"-i,--transformGitMessage",
 "-e,--versions",
 	default: "patch",
 	description: "specify comma separated list of versions to update the changelog  (major | minor | (default) patch | premajor | preminor | prepatch | prerelease | from-git)."
@@ -80,6 +82,8 @@ pav can take up to 6 arguments: changelog, changelogTemplate, promptTemplate, tr
 2. changelogTemplate - changelog template file (relative file path).(default is ./changelogTemplate.md) (-t,--changelogTemplate)
 3. promptTemplate - prompt message template file (relative file path).(default is ./promptTemplate.md) (-p,--promptTemplate)
 4. transform - module or file to run a transformation when creating the changelog entry. (-r,--tranform)
+4. transformAuthor - module or file to run a transformation when parsing the author field. (-a,--tranformAuthor)
+4. transformGitMessage - module or file to run a transformation when parsing the git message. (-i,--tranformGitMessage)
 5. versions - Comma delimited list of semver version types. (default is "major,minor,patch,premajor,preminor,prepatch,prerelease,from-git") (-e,--versions)
 6. config - config file (file path). (-o,--config)
 
@@ -89,6 +93,8 @@ pav can take up to 6 arguments: changelog, changelogTemplate, promptTemplate, tr
     "changelogTemplate": "./changelogTemplate.md",
     "promptTemplate": "./promptTemplate.md",
     "transform": "",
+    "transformAuthor": "",
+    "transformGitMessage": "",
     "versions": "minor,major",
     "changelog": "./CHANGELOG.md"
 }

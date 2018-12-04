@@ -17,9 +17,12 @@ const start = async () => {
     }
     if (updateChangelog) {
       const match = content.match(pattern),
-        head = match && match[0];
-      if (head) {
-        let fileContent = content.replace(head, `${message}\n${head}`);
+        head = match && match[0] || '';
+      if (head || !content) {
+        let fileContent = message;
+        if (head) {
+          fileContent = content.replace(head, `${message}\n${head}`);
+        }
         await $c.writeFile(changelog, fileContent);
       }
     }

@@ -14,7 +14,9 @@ const defaultConfig = {
     changelogTemplate: './changelogTemplate.md',
     promptTemplate: './promptTemplate.md',
     versions: [],
-    transform: ''
+    transform: '',
+    transformGitMessage: '',
+    transformAuthor: ''
 }
 let config = $c.merge(defaultConfig, package.pav);
 let changelog = path.join(process.cwd(), config.changelog);
@@ -24,8 +26,10 @@ const defaultChanglogTemplate = `| \${version} | (\${author}:\${date}) \${others
 const defaultPromptTemplate = `**********************************************************************\n\${message}\n**********************************************************************\nThis will be your git message. Please enter your text to change\n`
 const silent = { silent: true, alwaysResolve: true };
 const GITDATA = 0, CHANGELOG = 1, CHANGELOG_TEMPLATE = 2, VERSION = 3, PROMPT_TEMPLATE = 4;
-config.middleware = $c.include(config.transform) || { transform: null };
-// config.versions = config.versions || [];
+let transform = $c.include(config.transform) || { transform: m => m };
+let transformGitMessage = $c.include(config.transformGitMessage) || { transformGitMessage: m => m };
+let transformAuthor = $c.include(config.transformAuthor) || { transformAuthor: m => m };
+config.middleware = $c.merge(transform, transformGitMessage, transformAuthor);
 let updateChangelog = !!~config.versions.indexOf(version) || !config.versions.length;
 
 async function generateMessage(template, data) {
@@ -46,35 +50,33 @@ async function parseGitCommits() {
         merges = [],
         docs = [],
         others = [];
+    const transformGitMessage = config.middleware.transformGitMessage.bind(config.middleware);
     const gitLines = gitOutput.output.split('\n')
         .condense()
         .map(x => {
             let message = x.replace(/.*?\s/, '');
             if (!message.indexOf('feat:')) {
                 features.push(message.replace(/feat:\s*?/, ''));
-                return message;
+                return transformGitMessage(message);
             }
             if (!message.indexOf('fix:')) {
                 fixes.push(message.replace(/fix:\s*?/, ''));
-                return message;
+                return transformGitMessage(message);
             }
             if (!message.indexOf('docs:')) {
                 docs.push(message.replace(/docs:\s*?/, ''));
-                return message;
+                return transformGitMessage(message);
             }
             if (!message.indexOf("Merge branch '")) {
                 merges.push(message);
-                return message;
+                return transformGitMessage(message);
             }
 
             others.push(message);
-            return message;
+            return transformGitMessage(message);
         });
 
-    const author = gitUsername.output
-        .strip('\n')
-        .replace('OFFICE\\', '')
-        .trim()
+    const author = config.middleware.transformAuthor(gitUsername.output.strip('\n').trim());
     const date = $c.now('m/d/y');
 
     return { author, date, features, fixes, docs, merges, others, gitLines };
@@ -94,7 +96,7 @@ async function getData() {
     ]);
 
     let data = results[GITDATA];
-    let content = results[CHANGELOG];
+    let content = !$c.isError(results[CHANGELOG]) ? results[CHANGELOG] : '';
     let changelogTemplateStr = !$c.isError(results[CHANGELOG_TEMPLATE])
         ? results[CHANGELOG_TEMPLATE]
         : defaultChanglogTemplate;
@@ -118,7 +120,12 @@ function setConfig(conf) {
     version = conf.version || 'patch';
     template = path.join(process.cwd(), config.changelogTemplate);
     promptTemplate = path.join(process.cwd(), config.promptTemplate);
-    config.middleware = $c.include(config.transform || "") || { transform: null };
+
+    let transform = $c.include(config.transform || "") || { transform: m => m };
+    let transformGitMessage = $c.include(config.transformGitMessage || "") || { transformGitMessage: m => m };
+    let transformAuthor = $c.include(config.transformAuthor || "") || { transformAuthor: m => m };
+    config.middleware = $c.merge(transform, transformGitMessage, transformAuthor);
+
     if ($c.isString(config.versions)) {
         config.versions = config.versions.split(',');
     }
