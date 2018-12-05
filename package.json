@@ -1,6 +1,6 @@
 {
   "name": "package-auto-version",
-  "version": "0.0.1-8",
+  "version": "1.0.0",
   "description": "Automatically update version and update changelog",
   "main": "index.js",
   "scripts": {
@@ -24,6 +24,6 @@
     "pav": "./bin/pav"
   },
   "dependencies": {
-    "craydent": "^0.8.9"
+    "craydent": "^0.9.0"
   }
 }
