@@ -26,6 +26,9 @@ const defaultChanglogTemplate = `| \${version} | (\${author}:\${date}) \${others
 const defaultPromptTemplate = `**********************************************************************\n\${message}\n**********************************************************************\nThis will be your git message. Please enter your text to change\n`
 const silent = { silent: true, alwaysResolve: true };
 const GITDATA = 0, CHANGELOG = 1, CHANGELOG_TEMPLATE = 2, VERSION = 3, PROMPT_TEMPLATE = 4;
+const RED = '\x1b[31m%s\x1b[0m',
+    GREEN = '\x1b[32m%s\x1b[0m',
+    YELLOW = '\x1b[33m%s\x1b[0m';
 let transform = $c.include(config.transform) || { transform: m => m };
 let transformGitMessage = $c.include(config.transformGitMessage) || { transformGitMessage: m => m };
 let transformAuthor = $c.include(config.transformAuthor) || { transformAuthor: m => m };
@@ -84,6 +87,10 @@ async function parseGitCommits() {
 async function updateVersion() {
     const versionObject = await exec(`npm version ${version}`, silent);
     const output = versionObject.output || "";
+    if (!/^v\d+?\.\d+?\.\d+?/.test(output)) {
+        console.log(RED, output);
+        process.exit(1);
+    }
     return output.strip(['v', '\n']);
 }
 async function getData() {

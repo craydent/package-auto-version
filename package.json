@@ -1,6 +1,6 @@
 {
   "name": "package-auto-version",
-  "version": "0.0.1-6",
+  "version": "0.0.1-7",
   "description": "Automatically update version and update changelog",
   "main": "index.js",
   "scripts": {
