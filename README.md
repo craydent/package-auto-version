@@ -100,6 +100,17 @@ pav can take up to 6 arguments: changelog, changelogTemplate, promptTemplate, tr
 }
 ```
 
+#### Example Templates
+Prompt template:
+```
+***\n\${message}\n***\nThis will be your git message. Please enter your text to change\n
+```
+
+Changelog template:
+```
+| ${version} | (${author}:\${date}) '${others.0}' ${FOREACH ${other} in ${others}}${other}${END FOREACH} |\n
+```
+
 ## Download
 
  * [GitHub](https://github.com/cinada/package-auto-version)
