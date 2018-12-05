@@ -29,11 +29,19 @@ const GITDATA = 0, CHANGELOG = 1, CHANGELOG_TEMPLATE = 2, VERSION = 3, PROMPT_TE
 const RED = '\x1b[31m%s\x1b[0m',
     GREEN = '\x1b[32m%s\x1b[0m',
     YELLOW = '\x1b[33m%s\x1b[0m';
-let transform = $c.include(config.transform) || { transform: m => m };
-let transformGitMessage = $c.include(config.transformGitMessage) || { transformGitMessage: m => m };
-let transformAuthor = $c.include(config.transformAuthor) || { transformAuthor: m => m };
+let transform = include(config.transform) || { transform: m => m };
+let transformGitMessage = include(config.transformGitMessage) || { transformGitMessage: m => m };
+let transformAuthor = include(config.transformAuthor) || { transformAuthor: m => m };
 config.middleware = $c.merge(transform, transformGitMessage, transformAuthor);
 let updateChangelog = !!~config.versions.indexOf(version) || !config.versions.length;
+
+function include(mod){
+    if (!mod) {
+        return false;
+    }
+    let cwd = process.cwd();
+    return $c.include(mod) || $c.include(path.join(cwd, mod)) || $c.include(mod.replace('<rootDir>', cwd));
+}
 
 async function generateMessage(template, data) {
     let message = $c.fillTemplate(template, data);
@@ -118,19 +126,19 @@ async function getData() {
 function setConfig(conf) {
     let tempConfig = {};
     if ($c.isString(package.pav)) {
-        package.pav = $c.include(package.pav);
+        package.pav = include(package.pav);
     }
     if ($c.isString(config.config)) {
-        tempConfig = $c.include(config.config) || $c.tryEval(config.config, JSON.parse) || {};
+        tempConfig = include(config.config) || $c.tryEval(config.config, JSON.parse) || {};
     }
     config = $c.merge(defaultConfig, package.pav, tempConfig, conf);
     version = conf.version || 'patch';
     template = path.join(process.cwd(), config.changelogTemplate);
     promptTemplate = path.join(process.cwd(), config.promptTemplate);
 
-    let transform = $c.include(config.transform || "") || { transform: m => m };
-    let transformGitMessage = $c.include(config.transformGitMessage || "") || { transformGitMessage: m => m };
-    let transformAuthor = $c.include(config.transformAuthor || "") || { transformAuthor: m => m };
+    let transform = include(config.transform) || { transform: m => m };
+    let transformGitMessage = include(config.transformGitMessage) || { transformGitMessage: m => m };
+    let transformAuthor = include(config.transformAuthor) || { transformAuthor: m => m };
     config.middleware = $c.merge(transform, transformGitMessage, transformAuthor);
 
     if ($c.isString(config.versions)) {

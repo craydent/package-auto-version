@@ -7,10 +7,7 @@ const defaultConfig = {
     changelog: './CHANGELOG.md',
     changelogTemplate: './changelogTemplate.md',
     promptTemplate: './promptTemplate.md',
-    versions: [],
-    transform: '',
-    transformGitMessage: '',
-    transformAuthor: ''
+    versions: []
 };
 $c.DEBUG_MODE = true;
 
