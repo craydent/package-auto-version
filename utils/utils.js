@@ -13,6 +13,8 @@ const defaultConfig = {
     changelog: './CHANGELOG.md',
     changelogTemplate: './changelogTemplate.md',
     promptTemplate: './promptTemplate.md',
+    noPrompt: false,
+    date: 'm/d/y',
     versions: [],
     transform: '',
     transformGitMessage: '',
@@ -88,7 +90,7 @@ async function parseGitCommits() {
         });
 
     const author = config.middleware.transformAuthor(gitUsername.output.strip('\n').trim());
-    const date = $c.now('m/d/y');
+    const date = $c.now(config.date || 'm/d/y');
 
     return { author, date, features, fixes, docs, merges, others, gitLines };
 }

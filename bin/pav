@@ -6,7 +6,9 @@ const { start } = require('../utils/start');
 const defaultConfig = {
     changelog: './CHANGELOG.md',
     changelogTemplate: './changelogTemplate.md',
-    promptTemplate: './promptTemplate.md',
+	promptTemplate: './promptTemplate.md',
+	noPrompt: false,
+	date: 'm/d/y',
     versions: []
 };
 $c.DEBUG_MODE = true;
@@ -47,6 +49,16 @@ const options = [{
 	option: "-o,--config",
 	type: "string",
 	description: "specify a c[o]nfig file to use instead of using command line options."
+}, {
+	option: "-n,--noPrompt",
+	type: "boolean",
+	default: false,
+	description: "specify if you do [n]ot want to show the prompt."
+}, {
+	option: "-d,--date",
+	type: "string",
+	default: 'm/d/y',
+	description: "specify if you do [n]ot want to show the prompt."
 }, {
 	option: "-v,--version",
 	type: "string",
@@ -131,7 +143,12 @@ async function init() {
 	if (CL.o != defaultConfig.config) {
 		config.config = CL.o;
 	}
+	if (CL.n != defaultConfig.noPrompt) {
+		config.noPrompt = CL.p;
+	}
+	if (CL.d != defaultConfig.date) {
+		config.date = CL.d;
+	}
 	utils.setConfig(config);
 	await start()
-	// process.exit();
 }
