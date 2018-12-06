@@ -24,6 +24,9 @@ const start = async () => {
           fileContent = content.replace(head, `${message}\n${head}`);
         }
         await $c.writeFile(changelog, fileContent);
+      } else if (!head && content) {
+        let fileContent = content + message;
+        await $c.writeFile(changelog, fileContent);
       }
     }
     console.log(data.version);
