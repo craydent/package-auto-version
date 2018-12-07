@@ -1,10 +1,10 @@
 {
   "name": "package-auto-version",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Automatically update version and update changelog",
   "main": "index.js",
   "scripts": {
-    "pav": "node ./index.js",
+    "pav": "./bin/pav",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -28,7 +28,8 @@
     "changelog": "./CHANGELOG.md",
     "changelogTemplate": "./template.md",
     "noPrompt": true,
-    "versions": "minor,major,patch"
+    "versions": "minor,major,patch",
+    "match": "## \\[.*?\\] - .*?\n"
   },
   "dependencies": {
     "craydent": "^0.9.0"

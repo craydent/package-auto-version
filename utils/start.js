@@ -5,7 +5,7 @@ const start = async () => {
   try {
     const { data, content, changelogTemplateStr, promptTemplateStr } = await getData();
 
-    let pattern = new RegExp(
+    let pattern = config.match || new RegExp(
       `(${changelogTemplateStr.replace(/\$\{.*?\}/g, '.*?').replace(/\|/g, '\\|')})`
     );
 

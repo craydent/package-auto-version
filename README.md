@@ -56,11 +56,11 @@ pav --help/help will output the current help docs for the module.
 #### Usage
 
 ```shell
-$ pav {{./path/to/CHANGELOG.md}} {{./path/to/changelogTemplate.md}} {{./path/to/promptTemplate.md}} {{module/or/path/to/transform/file}} {{module/or/path/to/transformAuthor/file}} {{module/or/path/to/transformGitMessage/file}} '{{patch,minor,major,etc}}' {{/var/path/to/config.json}} {{true/false}} {{date.format}}
+$ pav {{./path/to/CHANGELOG.md}} {{./path/to/changelogTemplate.md}} {{./path/to/promptTemplate.md}} {{module/or/path/to/transform/file}} {{module/or/path/to/transformAuthor/file}} {{module/or/path/to/transformGitMessage/file}} '{{patch,minor,major,etc}}' {{/var/path/to/config.json}} {{true/false}} {{date.format}} {{regex.as.string}}
 
-$ pav -c {{./path/to/CHANGELOG.md}} -t {{./path/to/changelogTemplate.md}} -p {{./path/to/promptTemplate.md}} -r {{module/or/path/to/transform/file}} -a {{module/or/path/to/transformAuthor/file}} -i {{module/or/path/to/transformGitMessage/file}} -e '{{patch,minor,major,etc}}' -o {{/var/path/to/config.json}} -n {{true/false}} -d {{date.format}}
+$ pav -c {{./path/to/CHANGELOG.md}} -t {{./path/to/changelogTemplate.md}} -p {{./path/to/promptTemplate.md}} -r {{module/or/path/to/transform/file}} -a {{module/or/path/to/transformAuthor/file}} -i {{module/or/path/to/transformGitMessage/file}} -e '{{patch,minor,major,etc}}' -o {{/var/path/to/config.json}} -n {{true/false}} -d {{date.format}} -m {{regex.as.string}}
 
-$ pav --changelog {{./path/to/CHANGELOG.md}} --changelogTemplate {{./path/to/changelogTemplate.md}} --promptTemplate {{./path/to/promptTemplate.md}} --transform {{module/or/path/to/transform/file}} --transformAuthor {{module/or/path/to/transformAuthor/file}} --transformGitMessage {{module/or/path/to/transformGitMessage/file}} --versions '{{patch,minor,major,etc}}' --config {{/var/path/to/config.json}} --noPrompt {{true/false}} --date {{date.format}}
+$ pav --changelog {{./path/to/CHANGELOG.md}} --changelogTemplate {{./path/to/changelogTemplate.md}} --promptTemplate {{./path/to/promptTemplate.md}} --transform {{module/or/path/to/transform/file}} --transformAuthor {{module/or/path/to/transformAuthor/file}} --transformGitMessage {{module/or/path/to/transformGitMessage/file}} --versions '{{patch,minor,major,etc}}' --config {{/var/path/to/config.json}} --noPrompt {{true/false}} --date {{date.format}} --match {{regex.as.string}}
 ```
 
 "-c,--changelog"
@@ -80,7 +80,9 @@ $ pav --changelog {{./path/to/CHANGELOG.md}} --changelogTemplate {{./path/to/cha
     default: false
 "-d,--date"
     default: 'm/d/y'
-pav can take up to 9 arguments:
+"-m,--match"
+    default: "template"
+pav can take up to 10 arguments:
     changelog
     changelogTemplate
     promptTemplate
@@ -101,6 +103,7 @@ When arguments are missing, the CLI will use default values.
 7. versions - Comma delimited list of semver version types. (default is "major,minor,patch,premajor,preminor,prepatch,prerelease,from-git") (-e,--versions)
 8. config - config file (file path). (-o,--config)
 9. noPrompt - flag specifying if you do [n]ot want to show the prompt.
+10. match - regex [m]atch to use as a marker of where to replace text for more complex templates.
 
 ```js
 // example config file when using the config option or if you set the property pav in the package.json
@@ -113,7 +116,8 @@ When arguments are missing, the CLI will use default values.
     "transform": "",
     "transformAuthor": "",
     "transformGitMessage": "",
-    "versions": "minor,major"
+    "versions": "minor,major",
+    "match": "\\|.*?\\|.*?\\|\n"
 }
 ```
 #### Data provided to templates
@@ -139,6 +143,50 @@ Prompt template:
 Changelog template:
 ```
 | ${version} | (${author}:\${date}) '${others.0}' ${FOREACH ${other} in ${others}}${other}${END FOREACH} |\n
+```
+
+#### Complex templates with match
+Changelog file
+```
+# Changelog
+
+## [0.0.1] - 12/05/18
+
+#### Docs
+- message1
+- message2
+
+```
+Template
+```
+## [${version}] - ${date}
+${IF (${docs.length})}
+#### Docs
+- ${FOREACH ${doc} in ${docs}}doc${END FOREACH}
+${END IF}
+```
+Match
+```js
+{
+    "match": "## \\[.*?\\] - .*?\n"
+}
+```
+Result -> the regex will match the `## [0.0.1] - 12/05/18` and replace that with itself and the rendered template.
+```
+# Changelog
+
+## [0.0.2] - 12/06/18
+
+#### Docs
+- message5
+- message6
+
+## [0.0.1] - 12/05/18
+
+#### Docs
+- message1
+- message2
+
 ```
 
 ## Download

@@ -60,6 +60,10 @@ const options = [{
 	default: 'm/d/y',
 	description: "specify if you do [n]ot want to show the prompt."
 }, {
+	option: "-m,--match",
+	type: "string",
+	description: "specify pattern to [m]atch to use as marker for adding to the changelog."
+}, {
 	option: "-v,--version",
 	type: "string",
 	description: "indicates the current [v]ersion of Package auto version."
@@ -148,6 +152,9 @@ async function init() {
 	}
 	if (CL.d != defaultConfig.date) {
 		config.date = CL.d;
+	}
+	if (CL.m) {
+		config.match = new RegExp(CL.m);
 	}
 	utils.setConfig(config);
 	await start()

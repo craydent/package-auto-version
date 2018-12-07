@@ -1,2 +1,50 @@
 # Changelog
 
+## [1.2.0] - 12/06/18
+#### Docs
+- Added configuration to package.json.
+- Created template.md to use for the CHANGELOG.
+- Added match as an option to account for complicated templates that cannot be matched by taking the shell of the template.
+- Added match to the CLI.
+- Respect match option in creating the CHANGELOG entry.
+- Updated README with usage for match.
+- Added script in package.json to run the current CLI for pav.
+
+#### Fixes
+- Added noPrompt and date to the CLI options.
+- Respect the date format in the CHANGELOG.
+- Fixed issue -> when the CHANGELOG is empty/pattern is not found, changelog was not generating.
+- Fixed template syntax to use the variables instead of the hardcoded string.
+- Removed leading and trailing white space in the messages.
+
+
+## [1.0.1] - 12/06/18
+#### Docs
+- Created CHANGELOG.md.
+- Added missing example templates in the README.
+- Updated README with latest features.
+- Updated README with information about the data being passed to the templates.
+
+
+
+#### Features
+- Added date format to be configurable.
+
+
+
+#### Fixes
+- Made noPrompt to be configurable.
+
+
+
+
+
+## [1.0.0] - 12/05/18
+#### Docs
+- Complete and published v1.
+
+
+
+
+
+

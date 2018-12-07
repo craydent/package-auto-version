@@ -36,6 +36,9 @@ let transformGitMessage = include(config.transformGitMessage) || { transformGitM
 let transformAuthor = include(config.transformAuthor) || { transformAuthor: m => m };
 config.middleware = $c.merge(transform, transformGitMessage, transformAuthor);
 let updateChangelog = !!~config.versions.indexOf(version) || !config.versions.length;
+if ($c.isString(config.match)) {
+    config.match = new RegExp(config.match);
+}
 
 function include(mod){
     if (!mod) {
@@ -67,17 +70,17 @@ async function parseGitCommits() {
     const gitLines = gitOutput.output.split('\n')
         .condense()
         .map(x => {
-            let message = x.replace(/.*?\s/, '');
+            let message = x.replace(/.*?\s/, '').trim();
             if (!message.indexOf('feat:')) {
-                features.push(message.replace(/feat:\s*?/, ''));
+                features.push(message.replace(/feat:\s*?/, '').trim());
                 return transformGitMessage(message);
             }
             if (!message.indexOf('fix:')) {
-                fixes.push(message.replace(/fix:\s*?/, ''));
+                fixes.push(message.replace(/fix:\s*?/, '').trim());
                 return transformGitMessage(message);
             }
             if (!message.indexOf('docs:')) {
-                docs.push(message.replace(/docs:\s*?/, ''));
+                docs.push(message.replace(/docs:\s*?/, '').trim());
                 return transformGitMessage(message);
             }
             if (!message.indexOf("Merge branch '")) {
@@ -134,6 +137,9 @@ function setConfig(conf) {
         tempConfig = include(config.config) || $c.tryEval(config.config, JSON.parse) || {};
     }
     config = $c.merge(defaultConfig, package.pav, tempConfig, conf);
+    if ($c.isString(config.match)) {
+        config.match = new RegExp(config.match);
+    }
     version = conf.version || 'patch';
     template = path.join(process.cwd(), config.changelogTemplate);
     promptTemplate = path.join(process.cwd(), config.promptTemplate);
