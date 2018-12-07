@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.2.4] - 12/07/18
+
+
+
+#### Fixes
+- Consumable  templates were using relative path
+
+
+
+
 ## [1.2.3] - 12/07/18
 
 
