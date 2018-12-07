@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.2.2] - 12/07/18
+
+#### Docs
+- Update README to showcase <rootDir> and added documentation
+
+
+#### Features
+- Added consumable matchAdded support for modules for changelogs/templates/matchAdded consumable templates
+
+
+
+
+#### Other
+- Updated package.json pav config to use <rootDir> and modulesMoved and renamed template.md
+
+
 ## [1.2.1] - 12/06/18
 
 
