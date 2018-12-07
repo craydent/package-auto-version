@@ -1,5 +1,7 @@
 const $c = require('craydent');
 const path = require('path');
+const fs = require('fs');
+const cwd = process.cwd();
 const readline = require('readline'),
     rl = readline.createInterface({
         input: process.stdin,
@@ -8,7 +10,7 @@ const readline = require('readline'),
 const question = $c.yieldable(rl.question, rl)
 const exec = $c.CLI.exec;
 let version = process.argv[2] || 'patch';
-const package = $c.include(path.join(process.cwd(), './package.json')) || {};
+const package = $c.include(path.join(cwd, './package.json')) || {};
 const defaultConfig = {
     changelog: './CHANGELOG.md',
     changelogTemplate: './changelogTemplate.md',
@@ -21,10 +23,10 @@ const defaultConfig = {
     transformAuthor: ''
 }
 let config = $c.merge(defaultConfig, package.pav);
-let changelog = path.join(process.cwd(), config.changelog);
-let template = path.join(process.cwd(), config.changelogTemplate);
-let promptTemplate = path.join(process.cwd(), config.promptTemplate);
-const defaultChanglogTemplate = `| \${version} | (\${author}:\${date}) \${others.0} |\n`;
+let changelog = config.changelog = absolutePath(config.changelog);
+let template = config.changelogTemplate = absolutePath(config.changelogTemplate);
+let promptTemplate = config.promptTemplate = absolutePath(config.promptTemplate);
+const defaultChanglogTemplate = require(absolutePath('./simple'));
 const defaultPromptTemplate = `**********************************************************************\n\${message}\n**********************************************************************\nThis will be your git message. Please enter your text to change\n`
 const silent = { silent: true, alwaysResolve: true };
 const GITDATA = 0, CHANGELOG = 1, CHANGELOG_TEMPLATE = 2, VERSION = 3, PROMPT_TEMPLATE = 4;
@@ -36,16 +38,48 @@ let transformGitMessage = include(config.transformGitMessage) || { transformGitM
 let transformAuthor = include(config.transformAuthor) || { transformAuthor: m => m };
 config.middleware = $c.merge(transform, transformGitMessage, transformAuthor);
 let updateChangelog = !!~config.versions.indexOf(version) || !config.versions.length;
-if ($c.isString(config.match)) {
+let match = include(config.match);
+if ($c.isString(config.match) && !match) {
     config.match = new RegExp(config.match);
+} else {
+    config.match = $c.isRegExp(match) ? match : new RegExp(match)
+}
+
+function absolutePath(pathStr) {
+    pathStr = pathStr || "";
+    if (!pathStr.indexOf('./')) {
+        return path.join(cwd, pathStr);
+    }
+    if (~pathStr.indexOf('<rootDir>')) {
+        return pathStr.replace('<rootDir>', cwd);
+    }
+    if (pathStr[0] == '/' && pathStr.indexOf(cwd)) {
+        return cwd + pathStr;
+    }
+    return pathStr;
 }
 
 function include(mod){
     if (!mod) {
         return false;
     }
-    let cwd = process.cwd();
-    return $c.include(mod) || $c.include(path.join(cwd, mod)) || $c.include(mod.replace('<rootDir>', cwd));
+    let pth = absolutePath(mod);
+    try {
+        return $c.include(pth) || fs.readFileSync(pth, 'utf8');
+    } catch (e) {
+        return false;
+    }
+}
+async function includeAsync(mod){
+    if (!mod) {
+        return false;
+    }
+    let pth = absolutePath(mod);
+    try {
+        return $c.include(pth) || $c.readFile(pth, 'utf8');
+    } catch (e) {
+        return false;
+    }
 }
 
 async function generateMessage(template, data) {
@@ -109,10 +143,10 @@ async function updateVersion() {
 async function getData() {
     const results = await Promise.all([
         parseGitCommits(),
-        $c.readFile(changelog, 'utf8'),
-        $c.readFile(template, 'utf8'),
+        includeAsync(changelog),
+        includeAsync(template),
         updateVersion(),
-        $c.readFile(promptTemplate, 'utf8')
+        includeAsync(promptTemplate)
     ]);
 
     let data = results[GITDATA];
@@ -137,12 +171,16 @@ function setConfig(conf) {
         tempConfig = include(config.config) || $c.tryEval(config.config, JSON.parse) || {};
     }
     config = $c.merge(defaultConfig, package.pav, tempConfig, conf);
-    if ($c.isString(config.match)) {
+
+    let match = include(config.match);
+    if ($c.isString(config.match) && !match) {
         config.match = new RegExp(config.match);
+    } else {
+        config.match = $c.isRegExp(match) ? match : new RegExp(match)
     }
     version = conf.version || 'patch';
-    template = path.join(process.cwd(), config.changelogTemplate);
-    promptTemplate = path.join(process.cwd(), config.promptTemplate);
+    template = config.changelogTemplate = absolutePath(config.changelogTemplate);
+    promptTemplate = config.promptTemplate = absolutePath(config.promptTemplate);
 
     let transform = include(config.transform) || { transform: m => m };
     let transformGitMessage = include(config.transformGitMessage) || { transformGitMessage: m => m };
@@ -154,7 +192,7 @@ function setConfig(conf) {
     }
 
     module.exports.config = config;
-    module.exports.changelog = path.join(process.cwd(), config.changelog);
+    module.exports.changelog = config.changelog = absolutePath(config.changelog);
     module.exports.updateChangelog = !!~config.versions.indexOf(version) || !config.versions.length;
 
 }
