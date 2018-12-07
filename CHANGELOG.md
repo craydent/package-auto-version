@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.2.3] - 12/07/18
+
+
+
+#### Fixes
+- ./simple can not be referenced when running as a module.
+
+
+
+
 ## [1.2.2] - 12/07/18
 
 #### Docs
