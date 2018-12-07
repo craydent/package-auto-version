@@ -1,2 +1,2 @@
 const fs = require('fs');
-module.exports = fs.readFileSync('./templates/git-documentation.md', 'utf8');
+module.exports = fs.readFileSync(`${__dirname}/templates/git-documentation.md`, 'utf8');
