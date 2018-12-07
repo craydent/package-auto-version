@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.2.1] - 12/06/18
+
+
+
+#### Fixes
+- Update git downloads to the correct url in the README.
+
+
+
+
 ## [1.2.0] - 12/06/18
 #### Docs
 - Added configuration to package.json.
