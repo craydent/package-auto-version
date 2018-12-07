@@ -108,11 +108,11 @@ When arguments are missing, the CLI will use default values.
 ```js
 // example config file when using the config option or if you set the property pav in the package.json
 {
-    "changelog": "./CHANGELOG.md",
-    "changelogTemplate": "./changelogTemplate.md",
+    "changelog": "<rootDir>/CHANGELOG.md", // this can also be a package
+    "changelogTemplate": "<rootDir>//changelogTemplate.md", // this can also be a package
     "dateFormat": "m/d/y",
     "noPrompt": false,
-    "promptTemplate": "./promptTemplate.md",
+    "promptTemplate": "<rootDir>/promptTemplate.md", // this can also be a package
     "transform": "",
     "transformAuthor": "",
     "transformGitMessage": "",
@@ -144,6 +144,15 @@ Changelog template:
 ```
 | ${version} | (${author}:\${date}) '${others.0}' ${FOREACH ${other} in ${others}}${other}${END FOREACH} |\n
 ```
+
+There are templates you can consume in the templates folder:
+
+git-documentation.md
+- The match config value should be "## \\[.*?\\] - .*?\n"
+- The template and match can be imported via package-auto-version/git-documentation and package-auto-version/git-documentation-match respectively.
+
+simple.md
+- this does not require a match config
 
 #### Complex templates with match
 Changelog file
