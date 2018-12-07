@@ -191,8 +191,8 @@ Result -> the regex will match the `## [0.0.1] - 12/05/18` and replace that with
 
 ## Download
 
- * [GitHub](https://github.com/cinada/package-auto-version)
+ * [GitHub](https://github.com/craydent/package-auto-version)
  * [BitBucket](https://bitbucket.org/cinada/package-auto-version)
- * [GitLab](https://gitlab.com/cinada/package-auto-version)
+ * [GitLab](https://gitlab.com/craydent/package-auto-version)
 
 Package-Auto-Version is released under the [Dual licensed under the MIT or GPL Version 2 licenses].<br>
