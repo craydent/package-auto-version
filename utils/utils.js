@@ -26,7 +26,7 @@ let config = $c.merge(defaultConfig, package.pav);
 let changelog = config.changelog = absolutePath(config.changelog);
 let template = config.changelogTemplate = absolutePath(config.changelogTemplate);
 let promptTemplate = config.promptTemplate = absolutePath(config.promptTemplate);
-const defaultChanglogTemplate = require(absolutePath('./simple'));
+const defaultChanglogTemplate = '| ${version} | (${author}:${date}) ${others.0} |\n';
 const defaultPromptTemplate = `**********************************************************************\n\${message}\n**********************************************************************\nThis will be your git message. Please enter your text to change\n`
 const silent = { silent: true, alwaysResolve: true };
 const GITDATA = 0, CHANGELOG = 1, CHANGELOG_TEMPLATE = 2, VERSION = 3, PROMPT_TEMPLATE = 4;
