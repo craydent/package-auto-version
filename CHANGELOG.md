@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.2.6] - 12/10/18
+
+
+
+#### Fixes
+- issue when match is undefined in the bin
+
+
+
+
 ## [1.2.5] - 12/10/18
 
 
