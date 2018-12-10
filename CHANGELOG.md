@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.2.5] - 12/10/18
+
+
+
+#### Fixes
+- fixing issue when match is not defined
+
+
+
+
 ## [1.2.4] - 12/07/18
 
 
