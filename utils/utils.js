@@ -41,7 +41,7 @@ let updateChangelog = !!~config.versions.indexOf(version) || !config.versions.le
 let match = include(config.match);
 if ($c.isString(config.match) && !match) {
     config.match = new RegExp(config.match);
-} else {
+} else if (match) {
     config.match = $c.isRegExp(match) ? match : new RegExp(match)
 }
 
