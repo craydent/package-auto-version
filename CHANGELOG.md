@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.3.0] - 01/17/19
+
+#### Docs
+- updated readme to have simple usage first and added tags usage
+
+
+#### Features
+- added custom tags support
+
+
+
+
+
 ## [1.2.6] - 12/10/18
 
 
