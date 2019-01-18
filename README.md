@@ -5,15 +5,44 @@
 
 This module is a reverse proxy server implemented in node.  There are 2 ways to use: global install/standalone or as a module.  When used as a standalone, a config file is create in /var/craydent/config/craydent-proxy/pconfig.json and will auto update the routes if the file is changed.  This happens as well when used as a module and a file is provided as a config.  This eliminates the need to restart the server for a configuration and/or route update.
 
+## Simple usage
+
+### Node.js module
+```shell
+$ npm i --save package-auto-version
+```
+```js
+// example config file when using the config option or if you set the property pav in the package.json
+{
+    "changelog": "<rootDir>/CHANGELOG.md", // this can also be a package
+    "changelogTemplate": "<rootDir>//changelogTemplate.md", // this can also be a package
+    "dateFormat": "m/d/y",
+    "noPrompt": false,
+    "promptTemplate": "<rootDir>/promptTemplate.md", // this can also be a package
+    "transform": "",
+    "transformAuthor": "",
+    "transformGitMessage": "",
+    "versions": "minor,major",
+    "match": "\\|.*?\\|.*?\\|\n",
+    "tags": [] // when using tags in a config, you can use regex patterns instead of strings: [/cust:/] vs ["cust:"]
+}
+```
+There are 2 built in templates available to use (some more details below).
+  - git-documentation.md
+  - simple.md
+```js
+// example config using built in templates
+{
+    "changelogTemplate": "package-auto-version/git-documentation",
+    // or
+    "changelogTemplate": "package-auto-version/simple.md",
+}
+```
+
 ## Standalone
 ```shell
 $ npm install -g package-auto-version
 $ pav
-```
-
-## Node.js module
-```shell
-$ npm i --save package-auto-version
 ```
 
 ### CLI
@@ -56,11 +85,11 @@ pav --help/help will output the current help docs for the module.
 #### Usage
 
 ```shell
-$ pav {{./path/to/CHANGELOG.md}} {{./path/to/changelogTemplate.md}} {{./path/to/promptTemplate.md}} {{module/or/path/to/transform/file}} {{module/or/path/to/transformAuthor/file}} {{module/or/path/to/transformGitMessage/file}} '{{patch,minor,major,etc}}' {{/var/path/to/config.json}} {{true/false}} {{date.format}} {{regex.as.string}}
+$ pav {{./path/to/CHANGELOG.md}} {{./path/to/changelogTemplate.md}} {{./path/to/promptTemplate.md}} {{module/or/path/to/transform/file}} {{module/or/path/to/transformAuthor/file}} {{module/or/path/to/transformGitMessage/file}} '{{patch,minor,major,etc}}' {{/var/path/to/config.json}} {{true/false}} {{date.format}} {{regex.as.string}} {{array.as.string}}
 
-$ pav -c {{./path/to/CHANGELOG.md}} -t {{./path/to/changelogTemplate.md}} -p {{./path/to/promptTemplate.md}} -r {{module/or/path/to/transform/file}} -a {{module/or/path/to/transformAuthor/file}} -i {{module/or/path/to/transformGitMessage/file}} -e '{{patch,minor,major,etc}}' -o {{/var/path/to/config.json}} -n {{true/false}} -d {{date.format}} -m {{regex.as.string}}
+$ pav -c {{./path/to/CHANGELOG.md}} -t {{./path/to/changelogTemplate.md}} -p {{./path/to/promptTemplate.md}} -r {{module/or/path/to/transform/file}} -a {{module/or/path/to/transformAuthor/file}} -i {{module/or/path/to/transformGitMessage/file}} -e '{{patch,minor,major,etc}}' -o {{/var/path/to/config.json}} -n {{true/false}} -d {{date.format}} -m {{regex.as.string}} -g {{array.as.string}}
 
-$ pav --changelog {{./path/to/CHANGELOG.md}} --changelogTemplate {{./path/to/changelogTemplate.md}} --promptTemplate {{./path/to/promptTemplate.md}} --transform {{module/or/path/to/transform/file}} --transformAuthor {{module/or/path/to/transformAuthor/file}} --transformGitMessage {{module/or/path/to/transformGitMessage/file}} --versions '{{patch,minor,major,etc}}' --config {{/var/path/to/config.json}} --noPrompt {{true/false}} --date {{date.format}} --match {{regex.as.string}}
+$ pav --changelog {{./path/to/CHANGELOG.md}} --changelogTemplate {{./path/to/changelogTemplate.md}} --promptTemplate {{./path/to/promptTemplate.md}} --transform {{module/or/path/to/transform/file}} --transformAuthor {{module/or/path/to/transformAuthor/file}} --transformGitMessage {{module/or/path/to/transformGitMessage/file}} --versions '{{patch,minor,major,etc}}' --config {{/var/path/to/config.json}} --noPrompt {{true/false}} --date {{date.format}} --match {{regex.as.string}} --tags {{array.as.string}}
 ```
 
 "-c,--changelog"
@@ -82,7 +111,9 @@ $ pav --changelog {{./path/to/CHANGELOG.md}} --changelogTemplate {{./path/to/cha
     default: 'm/d/y'
 "-m,--match"
     default: "template"
-pav can take up to 10 arguments:
+"-g,--tags"
+    default: []
+pav can take up to 12 arguments:
     changelog
     changelogTemplate
     promptTemplate
@@ -92,6 +123,9 @@ pav can take up to 10 arguments:
     versions (comma separated list of major | minor | (default) patch | premajor | preminor | prepatch | prerelease | from-git)
     config (file path)
     noPrompt
+    date
+    match
+    tags (comma separted list of custom tags)
 When arguments are missing, the CLI will use default values.
 
 1. changelog - changelog file (relative file path).(default is ./CHANGELOG.md) (-c,--changelog)
@@ -105,21 +139,6 @@ When arguments are missing, the CLI will use default values.
 9. noPrompt - flag specifying if you do [n]ot want to show the prompt.
 10. match - regex [m]atch to use as a marker of where to replace text for more complex templates.
 
-```js
-// example config file when using the config option or if you set the property pav in the package.json
-{
-    "changelog": "<rootDir>/CHANGELOG.md", // this can also be a package
-    "changelogTemplate": "<rootDir>//changelogTemplate.md", // this can also be a package
-    "dateFormat": "m/d/y",
-    "noPrompt": false,
-    "promptTemplate": "<rootDir>/promptTemplate.md", // this can also be a package
-    "transform": "",
-    "transformAuthor": "",
-    "transformGitMessage": "",
-    "versions": "minor,major",
-    "match": "\\|.*?\\|.*?\\|\n"
-}
-```
 #### Data provided to templates
 ```
     prompt -> message
@@ -132,6 +151,9 @@ When arguments are missing, the CLI will use default values.
         gitLines // array of strings
         merges // array of strings
         others // array of strings
+        tags -> { // object having properties listed in tags where ":" is stripped
+            "cust": // array of strings
+        }
         version
 ```
 #### Example Templates
