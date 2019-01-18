@@ -152,7 +152,7 @@ When arguments are missing, the CLI will use default values.
         merges // array of strings
         others // array of strings
         tags -> { // object having properties listed in tags where ":" is stripped
-            "cust": // array of strings
+            "cust": // array of strings or regex
         }
         version
 ```

@@ -64,6 +64,10 @@ const options = [{
 	type: "string",
 	description: "specify pattern to [m]atch to use as marker for adding to the changelog."
 }, {
+	option: "-g,--tag",
+	type: "string",
+	description: "defined custom tags."
+}, {
 	option: "-v,--version",
 	type: "string",
 	description: "indicates the current [v]ersion of Package auto version."
@@ -155,6 +159,9 @@ async function init() {
 	}
 	if (CL.m) {
 		config.match = new RegExp(CL.m);
+	}
+	if (CL.g) {
+		config.tags = CL.g.split(',');
 	}
 	utils.setConfig(config);
 	await start()

@@ -17,6 +17,7 @@ const defaultConfig = {
     promptTemplate: './promptTemplate.md',
     noPrompt: false,
     date: 'm/d/y',
+    tags: [],
     versions: [],
     transform: '',
     transformGitMessage: '',
@@ -99,7 +100,16 @@ async function parseGitCommits() {
         fixes = [],
         merges = [],
         docs = [],
-        others = [];
+        others = [],
+        tags ={};
+    for (let i = 0, len = config.tags.length; i < len; i++) {
+        let tag = config.tags[i];
+        let name = $c.strip((tag || "").toString(),['/',':']);
+        if (!$c.isRegExp(tag)) {
+            config.tags = new RegExp(tag);
+        }
+        tags[name]=[];
+    }
     const transformGitMessage = config.middleware.transformGitMessage.bind(config.middleware);
     const gitLines = gitOutput.output.split('\n')
         .condense()
@@ -119,6 +129,12 @@ async function parseGitCommits() {
             }
             if (!message.indexOf("Merge branch '")) {
                 merges.push(message);
+                return transformGitMessage(message);
+            }
+            let tag = "";
+            if (tag = [message].contains(config.tags)) {
+                let name = $c.strip((tag || "").toString(),['/',':']);
+                tags[name].push(message.replace(tag, '').trim());
                 return transformGitMessage(message);
             }
 
@@ -189,6 +205,9 @@ function setConfig(conf) {
 
     if ($c.isString(config.versions)) {
         config.versions = config.versions.split(',');
+    }
+    if ($c.isString(config.tags)) {
+        config.tags = config.tags.split(',');
     }
 
     module.exports.config = config;
